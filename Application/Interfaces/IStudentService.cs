@@ -3,10 +3,10 @@ namespace Application.Interfaces;
 
 public interface IStudentService
 {
-    void AddStudent(Student student);
-    void UpdateStudent(Student student);
-    void DeleteStudent(int studentId);
-    void GetStudent(int studentId);
-    void GetAllStudents();
+    Task AddStudentAsync(Student student);
+    Task UpdateStudentAsync(Student student);
+    Task DeleteStudentAsync(int studentId);
+    Task GetStudentAsync(int studentId);
+    Task GetAllStudentsAsync();
 }
 
