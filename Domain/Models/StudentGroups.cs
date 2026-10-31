@@ -5,6 +5,6 @@ public class StudentGroups
     public int StudentGroupId { get; set; }
     public int StudentId { get; set; }
     public int GroupId { get; set; }
-    public StudentGroupStatus Status { get; set; }
-
+    public string Status { get; set; } =null!;
+    
 }

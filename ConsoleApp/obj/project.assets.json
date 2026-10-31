@@ -280,11 +280,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\ConsoleApp\\ConsoleApp.csproj",
+      "projectUniqueName": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\ConsoleApp\\ConsoleApp.csproj",
       "projectName": "ConsoleApp",
-      "projectPath": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\ConsoleApp\\ConsoleApp.csproj",
+      "projectPath": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\ConsoleApp\\ConsoleApp.csproj",
       "packagesPath": "C:\\Users\\Vali\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\ConsoleApp\\obj\\",
+      "outputPath": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\ConsoleApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Vali\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -300,14 +300,14 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Application\\Application.csproj": {
-              "projectPath": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Application\\Application.csproj"
+            "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Application\\Application.csproj"
             },
-            "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Domain\\Domain.csproj"
+            "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Domain\\Domain.csproj"
             },
-            "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\Vali\\Desktop\\CRM.Ado.Net\\Infrastructure\\Infrastructure.csproj"
+            "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\Vali\\Desktop\\PROJECT\\CRM.Net\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }

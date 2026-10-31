@@ -1,8 +1,8 @@
 namespace Domain.Models;
 
-public class Student
+public class Students
 {
-    public int StudentId { get; set; }
+    public int StudentsId { get; set; }
     public string Fullname { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;

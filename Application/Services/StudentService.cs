@@ -1,24 +1,43 @@
 using Application.Interfaces;
+using Domain.Interfaces;
 using Domain.Models;
-using Infrastructure.Repositories;
 
 namespace Application.Services;
 
-public class StudentService(StudentRepository studentRepository) : IStudentService
+public class StudentService(IStudentRepository studentRepository) : IStudentService
 {
-    private StudentRepository _repository = studentRepository;
-    public async Task AddStudentAsync(Student student)
+    private IStudentRepository _repository = studentRepository;
+
+    public async Task AddStudentAsync(Students student)
     {
         var result = await _repository.AddStudentAsync(student);
-        if (result) System.Console.WriteLine("Added successfully!");
-        else System.Console.WriteLine("Something went wrong!");
+        if (result) Console.WriteLine("Added successfully!");
+        else Console.WriteLine("Something went wrong!");
+    }
+
+    public async Task UpdateStudentAsync(Students student)
+    {
+        var result = await _repository.UpdateStudentAsync(student);
+        if (result) Console.WriteLine("Updated successfully!");
+        else Console.WriteLine("Something went wrong!");
     }
 
     public async Task DeleteStudentAsync(int studentId)
     {
         var result = await _repository.DeleteStudentAsync(studentId);
-        if (result) System.Console.WriteLine("Deleted successfully!");
-        else System.Console.WriteLine("Something went wrong!");
+        if (result) Console.WriteLine("Deleted successfully!");
+        else Console.WriteLine("Cannot delete: student not found or is in a group!");
+    }
+
+    public async Task GetStudentAsync(int studentId)
+    {
+        var student = await _repository.GetStudentAsync(studentId);
+        if (student == null)
+        {
+            Console.WriteLine("Student not found!");
+            return;
+        }
+        Console.WriteLine(student.StudentsId + " " + student.Fullname + " " + student.Email + " " + student.Phone + " " + student.EnrollmentDate.ToShortDateString());
     }
 
     public async Task GetAllStudentsAsync()
@@ -26,21 +45,43 @@ public class StudentService(StudentRepository studentRepository) : IStudentServi
         var students = await _repository.GetStudentsAsync();
         foreach (var student in students)
         {
-            System.Console.WriteLine(student.StudentId + " " + student.Fullname + " " + student.Email + " " + student.Phone + " " + student.EnrollmentDate);
+            Console.WriteLine(student.StudentsId + " " + student.Fullname + " " + student.Email + " " + student.Phone + " " + student.EnrollmentDate.ToShortDateString());
         }
     }
 
-    public async Task GetStudentAsync(int studentId)
+    public async Task GetStudentsWithGroupsAsync()
     {
-        var student = await _repository.GetStudentAsync(studentId);
-        System.Console.WriteLine(student.StudentId + " " + student.Fullname + " " + student.Email + " " + student.Phone + " " + student.EnrollmentDate);
+        var list = await _repository.GetStudentsWithGroupsAsync();
+        foreach (var item in list)
+        {
+            Console.WriteLine($"{item.studentid} {item.fullname} - {item.groupname}");
+        }
     }
 
-    public async Task UpdateStudentAsync(Student student)
+    public async Task GetStudentsWithoutGroupsAsync()
     {
-        var result = await _repository.UpdateStudentAsync(student);
-        if (result) System.Console.WriteLine("Updated successfully!");
-        else System.Console.WriteLine("Something went wrong!");
+        var students = await _repository.GetStudentsWithoutGroupsAsync();
+        foreach (var student in students)
+        {
+            Console.WriteLine(student.StudentsId + " " + student.Fullname);
+        }
     }
 
+    public async Task GetDroppedOutStudentsAsync()
+    {
+        var students = await _repository.GetDroppedOutStudentsAsync();
+        foreach (var student in students)
+        {
+            Console.WriteLine(student.StudentsId + " " + student.Fullname);
+        }
+    }
+
+    public async Task GetGraduatedStudentsAsync()
+    {
+        var students = await _repository.GetGraduatedStudentsAsync();
+        foreach (var student in students)
+        {
+            Console.WriteLine(student.StudentsId + " " + student.Fullname);
+        }
+    }
 }
