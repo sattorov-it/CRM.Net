@@ -1,70 +1,62 @@
+using System.Net;
 using Application.Interfaces;
+using Application.Responses;
 using Domain.Interfaces;
 using Domain.Models;
 
 namespace Application.Services;
 
-public class GroupService(IGroupRepository groupRepository) : IGroupService
+public class GroupsService(IGroupRepository groupRepository) : IGroupService
 {
     private IGroupRepository _repository = groupRepository;
 
-    public async Task AddGroupAsync(Groups group)
+    public async Task<ApiResponse<bool>> AddGroupAsync(Groups group)
     {
-        var result = await _repository.AddGroupAsync(group);
-        if (result) Console.WriteLine("Added successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.AddGroupAsync(group);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Added successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task UpdateGroupAsync(Groups group)
+    public async Task<ApiResponse<bool>> UpdateGroupAsync(Groups group)
     {
-        var result = await _repository.UpdateGroupAsync(group);
-        if (result) Console.WriteLine("Updated successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.UpdateGroupAsync(group);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Updated successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task DeleteGroupAsync(int groupId)
+    public async Task<ApiResponse<bool>> DeleteGroupAsync(int groupId)
     {
-        var result = await _repository.DeleteGroupAsync(groupId);
-        if (result) Console.WriteLine("Deleted successfully!");
-        else Console.WriteLine("Cannot delete: group not found or has students!");
+        var res = await _repository.DeleteGroupAsync(groupId);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Deleted successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task GetGroupAsync(int groupId)
+    public async Task<ApiResponse<Groups>> GetGroupAsync(int groupId)
     {
-        var group = await _repository.GetGroupAsync(groupId);
-        if (group == null)
-        {
-            Console.WriteLine("Group not found!");
-            return;
-        }
-        Console.WriteLine(group.GroupId + " " + group.GroupName + " course:" + group.CourseId + " mentor:" + group.MentorId + " " + group.StartDate.ToShortDateString() + " - " + group.EndDate.ToShortDateString());
+        var res = await _repository.GetGroupAsync(groupId);
+        return res == null
+        ? new ApiResponse<Groups>(HttpStatusCode.NotFound, "Group not found!", null)
+        : new ApiResponse<Groups>(HttpStatusCode.OK, "Group with given id.", res);
     }
 
-    public async Task GetAllGroupsAsync()
+    public async Task<ApiResponse<List<Groups>>> GetAllGroupsAsync()
     {
-        var groups = await _repository.GetGroupsAsync();
-        foreach (var group in groups)
-        {
-            Console.WriteLine(group.GroupId + " " + group.GroupName + " course:" + group.CourseId + " mentor:" + group.MentorId + " " + group.StartDate.ToShortDateString() + " - " + group.EndDate.ToShortDateString());
-        }
+        var res = await _repository.GetGroupsAsync();
+        return new ApiResponse<List<Groups>>(HttpStatusCode.OK, "List of groups.", res);
     }
 
-    public async Task GetStudentsPerGroupAsync()
+    public async Task<ApiResponse<List<dynamic>>> GetStudentsPerGroupAsync()
     {
-        var list = await _repository.GetStudentsPerGroupAsync();
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.groupname}: {item.studentscount}");
-        }
+        var res = await _repository.GetStudentsPerGroupAsync();
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Students per group.", res);
     }
 
-    public async Task GetEmptyGroupsAsync()
+    public async Task<ApiResponse<List<Groups>>> GetEmptyGroupsAsync()
     {
-        var groups = await _repository.GetEmptyGroupsAsync();
-        if (groups.Count == 0) Console.WriteLine("No empty groups!");
-        foreach (var group in groups)
-        {
-            Console.WriteLine(group.GroupId + " " + group.GroupName);
-        }
+        var res = await _repository.GetEmptyGroupsAsync();
+        return new ApiResponse<List<Groups>>(HttpStatusCode.OK, "Empty groups.", res);
     }
 }

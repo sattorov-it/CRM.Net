@@ -1,72 +1,64 @@
+using System.Net;
 using Application.Interfaces;
+using Application.Responses;
 using Domain.Interfaces;
 using Domain.Models;
 
 namespace Application.Services;
 
-public class MentorService(IMentorRepository mentorRepository) : IMentorService
+public class MentorsService(IMentorRepository mentorRepository) : IMentorService
 {
     private IMentorRepository _repository = mentorRepository;
 
-    public async Task AddMentorAsync(Mentors mentor)
+    public async Task<ApiResponse<bool>> AddMentorAsync(Mentors mentor)
     {
-        var result = await _repository.AddMentorAsync(mentor);
-        if (result) Console.WriteLine("Added successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.AddMentorAsync(mentor);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Added successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task UpdateMentorAsync(Mentors mentor)
+    public async Task<ApiResponse<bool>> UpdateMentorAsync(Mentors mentor)
     {
-        var result = await _repository.UpdateMentorAsync(mentor);
-        if (result) Console.WriteLine("Updated successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.UpdateMentorAsync(mentor);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Updated successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task DeleteMentorAsync(int mentorId)
+    public async Task<ApiResponse<bool>> DeleteMentorAsync(int mentorId)
     {
-        var result = await _repository.DeleteMentorAsync(mentorId);
-        if (result) Console.WriteLine("Deleted successfully!");
-        else Console.WriteLine("Cannot delete: mentor not found or has a group!");
+        var res = await _repository.DeleteMentorAsync(mentorId);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Deleted successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task GetMentorAsync(int mentorId)
+    public async Task<ApiResponse<Mentors>> GetMentorAsync(int mentorId)
     {
-        var mentor = await _repository.GetMentorAsync(mentorId);
-        if (mentor == null)
-        {
-            Console.WriteLine("Mentor not found!");
-            return;
-        }
-        Console.WriteLine(mentor.MentorId + " " + mentor.FullName + " " + mentor.Email + " " + mentor.Phone + " " + mentor.Specialization);
+        var res = await _repository.GetMentorAsync(mentorId);
+        return res == null
+        ? new ApiResponse<Mentors>(HttpStatusCode.NotFound, "Mentor not found!", null)
+        : new ApiResponse<Mentors>(HttpStatusCode.OK, "Mentor with given id.", res);
     }
 
-    public async Task GetAllMentorsAsync()
+    public async Task<ApiResponse<List<Mentors>>> GetAllMentorsAsync()
     {
-        var mentors = await _repository.GetMentorsAsync();
-        foreach (var mentor in mentors)
-        {
-            Console.WriteLine(mentor.MentorId + " " + mentor.FullName + " " + mentor.Email + " " + mentor.Phone + " " + mentor.Specialization);
-        }
+        var res = await _repository.GetMentorsAsync();
+        return new ApiResponse<List<Mentors>>(HttpStatusCode.OK, "List of mentors.", res);
     }
 
-    public async Task GetMentorWithMostStudentsAsync()
+    public async Task<ApiResponse<dynamic>> GetMentorWithMostStudentsAsync()
     {
-        var item = await _repository.GetMentorWithMostStudentsAsync();
-        if (item == null)
-        {
-            Console.WriteLine("No data!");
-            return;
-        }
-        Console.WriteLine($"{item.fullname}: {item.studentscount} students");
+        var res = await _repository.GetMentorWithMostStudentsAsync();
+        return res == null
+        ? new ApiResponse<dynamic>(HttpStatusCode.NotFound, "No mentors!", null)
+        : new ApiResponse<dynamic>(HttpStatusCode.OK, "Mentor with most students.", res);
     }
 
-    public async Task GetMentorsWithMultipleCoursesAsync()
+    public async Task<ApiResponse<List<dynamic>>> GetMentorsWithMultipleCoursesAsync()
     {
-        var list = await _repository.GetMentorsWithMultipleCoursesAsync();
-        if (list.Count == 0) Console.WriteLine("No such mentors!");
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.fullname}: {item.coursescount} courses");
-        }
+        var res = await _repository.GetMentorsWithMultipleCoursesAsync();
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Mentors with multiple courses.", res);
     }
 }

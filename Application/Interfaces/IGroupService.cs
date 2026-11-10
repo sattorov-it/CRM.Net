@@ -1,15 +1,16 @@
+using Application.Responses;
 using Domain.Models;
 
 namespace Application.Interfaces;
 
 public interface IGroupService
 {
-    Task AddGroupAsync(Groups group);
-    Task UpdateGroupAsync(Groups group);
-    Task DeleteGroupAsync(int groupId);
-    Task GetGroupAsync(int groupId);
-    Task GetAllGroupsAsync();
+    Task<ApiResponse<bool>> AddGroupAsync(Groups group);
+    Task<ApiResponse<bool>> UpdateGroupAsync(Groups group);
+    Task<ApiResponse<bool>> DeleteGroupAsync(int groupId);
+    Task<ApiResponse<Groups>> GetGroupAsync(int groupId);
+    Task<ApiResponse<List<Groups>>> GetAllGroupsAsync();
 
-    Task GetStudentsPerGroupAsync();
-    Task GetEmptyGroupsAsync();
+    Task<ApiResponse<List<dynamic>>> GetStudentsPerGroupAsync();
+    Task<ApiResponse<List<Groups>>> GetEmptyGroupsAsync();
 }

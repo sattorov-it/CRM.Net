@@ -1,11 +1,12 @@
+using Application.Responses;
 using Domain.Models;
 
 namespace Application.Interfaces;
 
 public interface IStudentGroupService
 {
-    Task AddStudentToGroupAsync(StudentGroups studentGroup);
-    Task GetStudentsInGroupAsync(int groupId);
-    Task UpdateStatusAsync(int studentGroupId, string status);
-    Task RemoveStudentFromGroupAsync(int studentGroupId);
+    Task<ApiResponse<bool>> AddStudentToGroupAsync(StudentGroups studentGroup);
+    Task<ApiResponse<List<dynamic>>> GetStudentsInGroupAsync(int groupId);
+    Task<ApiResponse<bool>> UpdateStatusAsync(int studentGroupId, string status);
+    Task<ApiResponse<bool>> RemoveStudentFromGroupAsync(int studentGroupId);
 }

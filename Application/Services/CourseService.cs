@@ -1,4 +1,6 @@
+using System.Net;
 using Application.Interfaces;
+using Application.Responses;
 using Domain.Interfaces;
 using Domain.Models;
 
@@ -8,82 +10,67 @@ public class CourseService(ICourseRepository courseRepository) : ICourseService
 {
     private ICourseRepository _repository = courseRepository;
 
-    public async Task AddCourseAsync(Course course)
+    public async Task<ApiResponse<bool>> AddCourseAsync(Course course)
     {
-        var result = await _repository.AddCourseAsync(course);
-        if (result) Console.WriteLine("Added successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.AddCourseAsync(course);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Added successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task UpdateCourseAsync(Course course)
+    public async Task<ApiResponse<bool>> UpdateCourseAsync(Course course)
     {
-        var result = await _repository.UpdateCourseAsync(course);
-        if (result) Console.WriteLine("Updated successfully!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.UpdateCourseAsync(course);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Updated successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task DeleteCourseAsync(int courseId)
+    public async Task<ApiResponse<bool>> DeleteCourseAsync(int courseId)
     {
-        var result = await _repository.DeleteCourseAsync(courseId);
-        if (result) Console.WriteLine("Deleted successfully!");
-        else Console.WriteLine("Cannot delete: course not found or has groups!");
+        var res = await _repository.DeleteCourseAsync(courseId);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Deleted successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Cannot delete: course not found or has groups!", res);
     }
 
-    public async Task GetCourseAsync(int courseId)
+    public async Task<ApiResponse<Course>> GetCourseAsync(int courseId)
     {
-        var course = await _repository.GetCourseAsync(courseId);
-        if (course == null)
-        {
-            Console.WriteLine("Course not found!");
-            return;
-        }
-        Console.WriteLine(course.CourseId + " " + course.Title + " " + course.Description + " " + course.DurationWeeks + " weeks");
+        var res = await _repository.GetCourseAsync(courseId);
+        return res == null
+        ? new ApiResponse<Course>(HttpStatusCode.NotFound, "Course not found!", null)
+        : new ApiResponse<Course>(HttpStatusCode.OK, "Course with given id.", res);
     }
 
-    public async Task GetAllCoursesAsync()
+    public async Task<ApiResponse<List<Course>>> GetAllCoursesAsync()
     {
-        var courses = await _repository.GetCoursesAsync();
-        foreach (var course in courses)
-        {
-            Console.WriteLine(course.CourseId + " " + course.Title + " " + course.Description + " " + course.DurationWeeks + " weeks");
-        }
+        var res = await _repository.GetCoursesAsync();
+        return new ApiResponse<List<Course>>(HttpStatusCode.OK, "List of courses.", res);
     }
 
-    public async Task GetStudentsPerCourseAsync()
+    public async Task<ApiResponse<List<dynamic>>> GetStudentsPerCourseAsync()
     {
-        var list = await _repository.GetStudentsPerCourseAsync();
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.title}: {item.studentscount}");
-        }
+        var res = await _repository.GetStudentsPerCourseAsync();
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Students per course.", res);
     }
 
-    public async Task GetMostPopularCourseAsync()
+    public async Task<ApiResponse<dynamic>> GetMostPopularCourseAsync()
     {
-        var item = await _repository.GetMostPopularCourseAsync();
-        if (item == null)
-        {
-            Console.WriteLine("No courses!");
-            return;
-        }
-        Console.WriteLine($"{item.title}: {item.studentscount}");
+        var res = await _repository.GetMostPopularCourseAsync();
+        return res == null
+        ? new ApiResponse<dynamic>(HttpStatusCode.NotFound, "No courses!", null)
+        : new ApiResponse<dynamic>(HttpStatusCode.OK, "Most popular course.", res);
     }
 
-    public async Task GetLeastPopularCoursesAsync()
+    public async Task<ApiResponse<List<dynamic>>> GetLeastPopularCoursesAsync()
     {
-        var list = await _repository.GetLeastPopularCoursesAsync();
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.title}: {item.studentscount}");
-        }
+        var res = await _repository.GetLeastPopularCoursesAsync();
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Least popular courses.", res);
     }
 
-    public async Task GetTopThreeCoursesAsync()
+    public async Task<ApiResponse<List<dynamic>>> GetTopThreeCoursesAsync()
     {
-        var list = await _repository.GetTopThreeCoursesAsync();
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.title}: {item.studentscount}");
-        }
+        var res = await _repository.GetTopThreeCoursesAsync();
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Top three courses.", res);
     }
 }

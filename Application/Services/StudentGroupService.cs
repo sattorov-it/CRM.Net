@@ -1,4 +1,6 @@
+using System.Net;
 using Application.Interfaces;
+using Application.Responses;
 using Domain.Interfaces;
 using Domain.Models;
 
@@ -8,34 +10,33 @@ public class StudentGroupService(IStudentGroupRepository studentGroupRepository)
 {
     private IStudentGroupRepository _repository = studentGroupRepository;
 
-    public async Task AddStudentToGroupAsync(StudentGroups studentGroup)
+    public async Task<ApiResponse<bool>> AddStudentToGroupAsync(StudentGroups studentGroup)
     {
-        var result = await _repository.AddStudentToGroupAsync(studentGroup);
-        if (result) Console.WriteLine("Student added to group!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.AddStudentToGroupAsync(studentGroup);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Added successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task GetStudentsInGroupAsync(int groupId)
+    public async Task<ApiResponse<List<dynamic>>> GetStudentsInGroupAsync(int groupId)
     {
-        var list = await _repository.GetStudentsInGroupAsync(groupId);
-        if (list.Count == 0) Console.WriteLine("No students in this group!");
-        foreach (var item in list)
-        {
-            Console.WriteLine($"{item.studentgroupid} {item.fullname} - {item.status}");
-        }
+        var res = await _repository.GetStudentsInGroupAsync(groupId);
+        return new ApiResponse<List<dynamic>>(HttpStatusCode.OK, "Students in group.", res);
     }
 
-    public async Task UpdateStatusAsync(int studentGroupId, string status)
+    public async Task<ApiResponse<bool>> UpdateStatusAsync(int studentGroupId, string status)
     {
-        var result = await _repository.UpdateStatusAsync(studentGroupId, status);
-        if (result) Console.WriteLine("Status updated!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.UpdateStatusAsync(studentGroupId, status);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Updated successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 
-    public async Task RemoveStudentFromGroupAsync(int studentGroupId)
+    public async Task<ApiResponse<bool>> RemoveStudentFromGroupAsync(int studentGroupId)
     {
-        var result = await _repository.RemoveStudentFromGroupAsync(studentGroupId);
-        if (result) Console.WriteLine("Student removed from group!");
-        else Console.WriteLine("Something went wrong!");
+        var res = await _repository.RemoveStudentFromGroupAsync(studentGroupId);
+        return res
+        ? new ApiResponse<bool>(HttpStatusCode.OK, "Removed successfully!", res)
+        : new ApiResponse<bool>(HttpStatusCode.InternalServerError, "Something went wrong!", res);
     }
 }

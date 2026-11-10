@@ -12,7 +12,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<bool> AddCourseAsync(Course course)
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = "insert into courses(title, description, durationweeks) values(@title, @description, @durationweeks)";
         var result = await connection.ExecuteAsync(query, course);
         return result > 0;
@@ -21,7 +20,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<bool> UpdateCourseAsync(Course course)
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = "update courses set title=@title, description=@description, durationweeks=@durationweeks where courseid=@courseid";
         var result = await connection.ExecuteAsync(query, course);
         return result > 0;
@@ -31,7 +29,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     {
 
         using var connection = _context.Connection();
-        connection.Open();
         var query = "delete from courses where courseid=@courseid and not exists (select 1 from groups where courseid=@courseid)";
         var result = await connection.ExecuteAsync(query, new { courseId });
         return result > 0;
@@ -40,7 +37,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<Course?> GetCourseAsync(int courseId)
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = "select * from courses where courseid=@courseid";
         var result = await connection.QuerySingleOrDefaultAsync<Course>(query, new { courseId });
         return result;
@@ -49,7 +45,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<List<Course>> GetCoursesAsync()
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = "select * from courses order by courseid";
         var result = (await connection.QueryAsync<Course>(query)).ToList();
         return result;
@@ -58,7 +53,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<List<dynamic>> GetStudentsPerCourseAsync()
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = @"select c.title, count(distinct sg.studentid) as studentscount
                       from courses c
                       left join groups g on g.courseid=c.courseid
@@ -72,7 +66,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<dynamic?> GetMostPopularCourseAsync()
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = @"select c.title, count(distinct sg.studentid) as studentscount
                       from courses c
                       left join groups g on g.courseid=c.courseid
@@ -87,7 +80,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<List<dynamic>> GetLeastPopularCoursesAsync()
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = @"select c.title, count(distinct sg.studentid) as studentscount
                       from courses c
                       left join groups g on g.courseid=c.courseid
@@ -102,7 +94,6 @@ public class CourseRepository(AppDbContext appDbContext) : ICourseRepository
     public async Task<List<dynamic>> GetTopThreeCoursesAsync()
     {
         using var connection = _context.Connection();
-        connection.Open();
         var query = @"select c.title, count(distinct sg.studentid) as studentscount
                       from courses c
                       left join groups g on g.courseid=c.courseid
